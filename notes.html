@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotesApp - Create Note</title>
+    <link rel="stylesheet" href="sty.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .login-message {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        .login-message a {
+            color: #f8f9fa;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .login-message a:hover {
+            text-decoration: none;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                NotesApp
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="login.html">Login</a>
+                <a href="notes.html" class="active">Create Notes</a>
+                <a href="storage.html">My Notes</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div id="loginMessage" class="login-message card animate-in">
+            <h2>Access Restricted</h2>
+            <p>You need to login or register to access this feature.</p>
+            <div>
+                <a href="login.html" class="btn">Login</a>
+                <a href="register.html" class="btn" style="margin-left: 10px;">Register</a>
+            </div>
+        </div>
+        
+        <div id="noteFormContainer" class="card animate-in hidden">
+            <h1>Create New Note</h1>
+            <p>Capture your thoughts, ideas, and important information.</p>
+            
+            <form id="noteForm">
+                <div class="form-group">
+                    <label for="noteTitle">Title</label>
+                    <input type="text" id="noteTitle" class="form-control" placeholder="Enter note title" >
+                </div>
+                
+                <div class="form-group">
+                    <label for="noteContent">Content</label>
+                    <textarea id="noteContent" class="form-control" rows="10" placeholder="Write your note here..." ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="noteCategory">Category</label>
+                    <select id="noteCategory" class="form-control">
+                        <option value="general">General</option>
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="ideas">Ideas</option>
+                        <option value="study">Study</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Save Note</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const userEmail = localStorage.getItem('userEmail');
+            const loginMessage = document.getElementById('loginMessage');
+            const noteFormContainer = document.getElementById('noteFormContainer');
+            
+            if (userEmail) {
+                // User is logged in - show form
+                loginMessage.classList.add('hidden');
+                noteFormContainer.classList.remove('hidden');
+            } else {
+                // User is not logged in - redirect to login after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+        });
+
+        // Note submission handler
+        document.getElementById('noteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('noteTitle').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+            const category = document.getElementById('noteCategory').value;
+            const date = new Date();
+            
+            const note = {
+                id: Date.now(),
+                title,
+                content,
+                category,
+                date: date.toISOString(),
+                formattedDate: date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }),
+                userEmail: localStorage.getItem('userEmail')
+            };
+            
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            notes.push(note);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            
+            document.getElementById('noteForm').reset();
+            alert('Note saved successfully!');
+        });
+    </script>
+</body>
+</html>

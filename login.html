@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotesApp - Login</title>
+    <link rel="stylesheet" href="sty.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                EVERNOTES
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="login.html" class="active">Login</a>
+                <a href="notes.html">Create Notes</a>
+                <a href="storage.html">My Notes</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="card animate-in" style="max-width: 600px; margin: 2rem auto;">
+            <h1 style="text-align: center;">Welcome Back!</h1>
+            <p style="text-align: center;">Please login to access your notes.</p>
+            
+            <form id="loginForm" class="form-container">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-control">
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">Login</button>
+                
+                <p style="text-align: center; margin-top: 1rem;">
+                    Don't have an account? <a href="#" id="showRegister">Register here</a>
+                </p>
+            </form>
+
+            <form id="registerForm" class="form-container" style="display: none;">
+                <div class="form-group">
+                    <label for="regName">Full Name</label>
+                    <input type="text" id="regName" class="form-control" >
+                </div>
+                
+                <div class="form-group">
+                    <label for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="regMobile">Mobile Number</label>
+                    <input type="tel" id="regMobile" class="form-control" >
+                </div>
+                
+                <div class="form-group">
+                    <label>User Type</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="regTypeStudent" name="userType" value="student" >
+                            <label for="regTypeStudent">Student</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="regTypeProfessional" name="userType" value="professional">
+                            <label for="regTypeProfessional">Professional</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="regTypeOther" name="userType" value="other">
+                            <label for="regTypeOther">Other</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regCountry">Country</label>
+                    <select id="regCountry" class="form-control">
+                        <option value="">Select Country</option>
+                        <option value="USA">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="India">India</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" class="form-control" >
+                </div>
+                
+                <div class="form-group">
+                    <label for="regConfirmPassword">Confirm Password</label>
+                    <input type="password" id="regConfirmPassword" class="form-control">
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">Register</button>
+                
+                <p style="text-align: center; margin-top: 1rem;">
+                    Already have an account? <a href="#" id="showLogin">Login here</a>
+                </p>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Form toggling
+        document.getElementById('showRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        });
+        
+        document.getElementById('showLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+        });
+
+        // Form validation for registration
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const mobile = document.getElementById('regMobile').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const country = document.getElementById('regCountry').value;
+            
+            // Validation checks
+            if (name.length < 3) {
+                alert('Name must be at least 3 characters long');
+                return;
+            }
+            
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            if (!/^\d{10,15}$/.test(mobile)) {
+                alert('Please enter a valid mobile number (10-15 digits)');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (country === '') {
+                alert('Please select your country');
+                return;
+            }
+            
+            // If all validations pass
+            alert('Registration successful! Redirecting to notes page...');
+            
+            // Store user data in localStorage
+            const userData = {
+                name,
+                email,
+                mobile,
+                country,
+                userType: document.querySelector('input[name="userType"]:checked').value
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            localStorage.setItem('userEmail', email);
+            
+            // Redirect to notes page after 1 second
+            setTimeout(() => {
+                window.location.href = 'notes.html';
+            }, 1000);
+        });
+
+        // Simple login validation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            // In a real app, you would verify against a database
+            // For this demo, we'll just check if password is at least 6 chars
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+            
+            // For demo purposes, we'll consider any email/password combo valid
+            alert('Login successful! Redirecting to notes page...');
+            
+            // Store email in localStorage to simulate logged in state
+            localStorage.setItem('userEmail', email);
+            
+            // Redirect to notes page after 1 second
+            setTimeout(() => {
+                window.location.href = 'notes.html';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

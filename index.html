@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App - Home</title>
+    <link rel="stylesheet" href="sty.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                EVERNOTES
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="login.html">Login</a>
+                <a href="notes.html">Create Notes</a>
+                <a href="storage.html">My Notes</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="card animate-in" style="animation-delay: 0.2s;">
+            <h1>Welcome to EverNotes</h1>
+            <p>Your personal digital notebook for capturing ideas, thoughts, and important information.</p>
+            <div class="cta-buttons">
+                <a href="login.html" class="btn">Get Started</a>
+                <a href="notes.html" class="btn btn-secondary">Create Note</a>
+            </div>
+        </section>
+
+        <section class="card animate-in" style="animation-delay: 0.4s;">
+            <h2>Features</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <h3>📝 Easy Note Taking</h3>
+                    <p>Create beautiful notes with rich formatting options.</p>
+                </div>
+                <div class="feature">
+                    <h3>🗂 Organized Storage</h3>
+                    <p>Store and retrieve your notes by date for easy access.</p>
+                </div>
+                <div class="feature">
+                    <h3>🔒 Secure Access</h3>
+                    <p>Your notes are protected with user authentication.</p>
+                </div>
+                <div class="feature">
+                    <h3>📱 Responsive Design</h3>
+                    <p>Access your notes from any device, anywhere.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        // Common functionality across all pages
+
+        // Check if user is logged in and update UI accordingly
+        document.addEventListener('DOMContentLoaded', function () {
+            // Highlight current page in navigation
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const navLinks = document.querySelectorAll('.nav-links a');
+
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref === currentPage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            // Check authentication status for protected pages
+            const protectedPages = ['notes.html', 'storage.html'];
+            if (protectedPages.includes(currentPage)) {
+                const userEmail = localStorage.getItem('userEmail');
+                if (!userEmail) {
+                    alert('Please login first');
+                    window.location.href = 'login.html';
+                }
+            }
+
+            // Display current user if logged in
+            const userDisplayElements = document.querySelectorAll('.current-user');
+            if (userDisplayElements.length > 0) {
+                const userEmail = localStorage.getItem('userEmail');
+                const userData = JSON.parse(localStorage.getItem('currentUser')) || {};
+
+                userDisplayElements.forEach(element => {
+                    if (userEmail) {
+                        element.textContent = userData.name || userEmail;
+                        element.style.display = 'inline';
+                    } else {
+                        element.style.display = 'none';
+                    }
+                });
+            }
+
+            // Logout functionality
+            const logoutButtons = document.querySelectorAll('.logout-btn');
+            logoutButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'index.html';
+                });
+            });
+        });
+
+        // Function to format dates consistently
+        function formatDate(dateString) {
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        // Function to show toast notifications
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add some basic toast styles if not already in CSS
+        if (!document.querySelector('style[data-toast-styles]')) {
+            const style = document.createElement('style');
+            style.setAttribute('data-toast-styles', 'true');
+            style.textContent = `
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast-success {
+            background-color: #4CAF50;
+        }
+        .toast-error {
+            background-color: #F44336;
+        }
+        .toast-info {
+            background-color: #2196F3;
+        }
+    `;
+            document.head.appendChild(style);
+        }
+    </script>
+</body>
+
+</html>
